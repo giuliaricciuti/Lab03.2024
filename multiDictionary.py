@@ -1,21 +1,19 @@
-import os
 
-import dictionary
 import dictionary as d
 import richWord as rw
 
 
 
 class MultiDictionary:
+
     def __init__(self):
-        self.english = d.Dictionary([], 'english')
-        self.italian = d.Dictionary([], 'italian')
-        self.spanish = d.Dictionary([], 'spanish')
+        self.english = d.Dictionary("inglese", [])
+        self.italian = d.Dictionary("italiano", [])
+        self.spanish = d.Dictionary("spagnolo",[])
 
         self.english.loadDictionary("resources/English.txt")
         self.italian.loadDictionary("resources/Italian.txt")
         self.spanish.loadDictionary("resources/Spanish.txt")
-        pass
 
 
     def printDic(self, language):
@@ -26,60 +24,60 @@ class MultiDictionary:
         elif language == "spanish":
             print(self.spanish)
         else:
-            print("Language not recognized")
-
+            print("No such language")
 
     def searchWord(self, words, language):
-        parole = []
+        parole=[]
         for word in words.split():
-            trovata = False
-            richw = rw.RichWord(word)
-            if language == "english" and word in self.english.dict:
-                trovata = True
-            elif language == "italian" and word in self.italian.dict:
-                trovata = True
-            elif language == "spanish" and word in self.spanish.dict:
-                trovata = True
-            if trovata:
-                richw.corretta = True
-            parole.append(richw)
-        return (parole)
-
-    def searchWordLinear(self, words, language):
-        parole = []
-        for word in words.split():
-            richw = rw.RichWord(word)
+            richW = rw.RichWord(word)
+            richW.corretta = False
             if language == "english":
-                w = next((p for p in self.english.dict if p==word), None)
-            elif language == "italian":
-                w = next((p for p in self.italian.dict if p == word), None)
-            elif language == "spanish":
-                w = next((p for p in self.spanish.dict if p == word), None)
-            if w != None:
-                richw.corretta = True
-            parole.append(richw)
-        return (parole)
+                if self.english.dict.__contains__(word):
+                    richW.corretta=True
 
-    def searchWordDichotomic(self, words, language):
+            if language == "italian":
+                if self.italian.dict.__contains__(word):
+                    richW.corretta=True
+
+            if language == "spanish":
+                 if self.spanish.dict.__contains__(word):
+                    richW.corretta=True
+            parole.append(richW)
+        return parole
+
+    def searchWordDichotomic (self, words, language):
         parole = []
         for word in words.split():
-            richw = rw.RichWord(word)
+            richW = rw.RichWord(word)
             if language == "english":
-                dict = self.english.dict
-                richw.corretta = searchDicotomic(word, dict)
-            elif language == "italian":
-                dict = self.italian.dict
-                richw.corretta = searchDicotomic(word, dict)
-            elif language == "spanish":
-                dict = self.spanish.dict
-                richw.corretta = searchDicotomic(word, dict)
-            parole.append(richw)
-        return (parole)
+                dizionario = self.english
+                self.searchDicotomic(richW, dizionario.dict)
 
-def searchDicotomic(word, dict):
-    len = len(dict)
-    if word == dict(len/2):
-        return True
-    elif word > dict(len/2):
-        pass
+            if language == "italian":
+                dizionario = self.italian
+                self.searchDicotomic(richW, dizionario.dict)
+
+            if language == "spanish":
+                dizionario = self.spanish
+                self.searchDicotomic(richW, dizionario.dict)
+            parole.append(richW)
+        return parole
+
+    def searchDicotomic(self, richW, dizionario = []):
+        l = int(len(dizionario)/2)
+        i = l
+        if richW.__str__()==dizionario[l]:
+            richW.corretta= True
+        elif richW.__str__()<dizionario[l]:
+            for i in range(0,l):
+                if richW.__str__()==dizionario[i]:
+                    richW.corretta=True
+                    break
+        elif richW.__str__()>dizionario[l]:
+            for i in range(l, len(dizionario)):
+                if richW.__str__()==dizionario[i]:
+                    richW.corretta=True
+                    break
+        else:
+            richW.corretta=False
 

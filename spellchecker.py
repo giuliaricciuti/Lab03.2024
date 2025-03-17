@@ -3,36 +3,51 @@ import time
 
 import multiDictionary as md
 
+
 class SpellChecker:
 
     def __init__(self):
-        self.multiDic = md.MultiDictionary()
-        pass
+        self.multid = md.MultiDictionary()
 
     def handleSentence(self, txtIn, language):
         txtIn = replaceChars(txtIn.lower())
+        errate = []
+        parole = []
 
-        print("\n INIZIALE \n")
+        print(f"-----------------"
+              f"classica"
+              f"-----------------")
         tic = datetime.datetime.now()
-        parole = self.multiDic.searchWord(txtIn, language)
-        errate = [p for p in parole if not p.corretta]
+        parole = self.multid.searchWord(txtIn, language)
+        errate = [w for w in parole if not w.corretta]
+        l = len(errate)
+        str=""
+        for e in errate[:l-1]:
+            str+= (f"{e.__str__()}, ")
+        str+=(errate[l-1].__str__())
+        print(str)
         toc = datetime.datetime.now()
-        print (f"ci hai impiegato {toc-tic}")
-        print ([e.__str__() for e in errate])
 
-        print("\n LINEARE \n")
-        parole = self.multiDic.searchWordLinear(txtIn, language)
-        errate = [p for p in parole if not p.corretta]
-        print([e.__str__() for e in errate])
+        print(f"ci hai messo {toc-tic} \n"
+              f"-----------------"
+              f"dicotomica"
+              f"-----------------")
+        tic = datetime.datetime.now()
+        parole = self.multid.searchWordDichotomic(txtIn, language)
+        errate = [w for w in parole if not w.corretta]
+        l = len(errate)
+        str = ""
+        for e in errate[:l - 1]:
+            str += (f"{e.__str__()}, ")
+        str += (errate[l - 1].__str__())
+        print(str)
+        toc = datetime.datetime.now()
+        print(f"ci hai messo {toc - tic} \n")
 
-        print("\n DICOTOMICA \n")
-        parole = self.multiDic.searchWordDichotomic(txtIn, language)
-        errate = [p for p in parole if not p.corretta]
-        print([e.__str__() for e in errate])
 
     def printMenu(self):
         print("______________________________\n" +
-              "      SpellChecker 101\n"+
+              "      SpellChecker 101\n" +
               "______________________________\n " +
               "Seleziona la lingua desiderata\n"
               "1. Italiano\n" +
